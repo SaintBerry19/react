@@ -25,6 +25,7 @@ function App() {
 
   const getProductos = async () => {
     let resp = await axios.get(`https://dummyjson.com/products`);
+    console.log(resp.data.products);
     setProductos(resp.data.products);
   };
 
@@ -54,7 +55,7 @@ function App() {
         <Bienvenida usuario={user.name} username={user.username} />
       </div>
 
-      <Productos/>
+      <Productos productos={productos}/>
       <div className="lista_container">
         <h2>Productos Array</h2>
         <ContenedorProductos
