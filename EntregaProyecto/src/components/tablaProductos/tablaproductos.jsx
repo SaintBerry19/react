@@ -1,42 +1,44 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
+import "./table.css";
 
 const columns = [
-  { id: 'Name', label: 'Name', minWidth: 170 },
-  { id: 'Brand', label: 'Brand', minWidth: 100 },
+  { id: "title", label: "Name", minWidth: 170 },
+  { id: "brand", label: "Brand", minWidth: 100 },
   {
-    id: 'Category',
-    label: 'Category',
+    id: "category",
+    label: "Category",
     minWidth: 170,
-    align: 'right',
+    align: "center",
   },
   {
-    id: 'Price',
-    label: 'Price',
+    id: "price",
+    label: "Price",
     minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    align: "center",
+    format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: 'Image',
-    label: 'Image',
+    id: "thumbnail",
+    label: "Image",
     minWidth: 170,
-    align: 'right'
+    align: "center",
+  },
+  {
+    id: "buttons",
+    label: "Agregar a Carrito",
+    minWidth: 170,
+    align: "center",
   },
 ];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
 
 export default function Productos(props) {
   const [page, setPage] = React.useState(0);
@@ -52,12 +54,13 @@ export default function Productos(props) {
   };
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <div className="tablaProductos">
+    <Paper sx={{ width: "100%" }}>
+      <TableContainer sx={{ maxHeight: 800}}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align="center" colSpan={5}>
+              <TableCell align="center" colSpan={6}>
                 MOBA STUDIO Productos
               </TableCell>
             </TableRow>
@@ -78,14 +81,44 @@ export default function Productos(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((producto) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={producto.name}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={producto.brand + producto.title}
+                  >
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value = producto[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
+                          {column.format && typeof value === "number" ? (
+                            column.format(value)
+                          ) : column.id === "thumbnail" ? (
+                            <img
+                              className="logo2"
+                              src={producto[column.id]}
+                              alt="MOBA logo"
+                            />
+                          ) : column.id === "buttons" ? (
+                            <div className="tablecss">
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => props.setRemove(!props.remove)}
+                              >
+                                Delete from Cart
+                              </Button>{" "}
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => props.setAdd(!props.add)}
+                              >
+                                Add to Cart
+                              </Button>
+                            </div>
+                          ) : (
+                            value
+                          )}
                         </TableCell>
                       );
                     })}
@@ -98,12 +131,13 @@ export default function Productos(props) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={props.productos.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
+    </div>
   );
 }
