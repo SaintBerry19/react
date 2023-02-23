@@ -58,7 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function NavBar() {
+export default function NavBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [optionEl, setOptionEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -155,7 +155,7 @@ export default function NavBar() {
     >
       <MenuItem>
         <IconButton size="large" aria-label="show 7 products" color="inherit">
-          <Badge badgeContent={7} color="error">
+          <Badge badgeContent={props.contador} color="error">
             <AddShoppingCartIcon />
           </Badge>
         </IconButton>
@@ -233,7 +233,7 @@ export default function NavBar() {
               aria-label="show 7 products"
               color="inherit"
             >
-              <Badge badgeContent={7} color="error">
+              <Badge badgeContent={props.contador} color="error">
                 <AddShoppingCartIcon />
               </Badge>
             </IconButton>
