@@ -3,7 +3,6 @@ import "./App.css";
 import NavBar from "./components/navbar/navbar";
 import Bienvenida from "./components/bienvenida/bienvenida";
 import axios from "axios";
-import ContenedorProductos from "./components/contenedorProductos/contenedorProductos";
 import { addProduct, removeProduct } from "./globalFunctions/globalFunctions";
 import Productos from "./components/tablaProductos/tablaproductos";
 
@@ -48,23 +47,16 @@ function App() {
         <NavBar contador={contador} />
       </div>
       <div className="container">
+        {" "}
+        <Bienvenida usuario={user.name} username={user.username} />
         <a href="https://www.instagram.com/mobastudio.mx/" target="_blank">
           <img className="logo" src="/moba-studio.jpg" alt="MOBA logo" />
         </a>
-        <Bienvenida usuario={user.name} username={user.username} />
       </div>
-
-      <Productos/>
-      <div className="lista_container">
-        <h2>Productos Array</h2>
-        <ContenedorProductos
-          productos={productos}
-          setAdd={setAdd}
+      <Productos productos={productos}          setAdd={setAdd}
           add={add}
           setRemove={setRemove}
-          remove={remove}
-        />
-      </div>
+          remove={remove} />
     </div>
   );
 }
