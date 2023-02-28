@@ -3,8 +3,10 @@ import "./App.css";
 import NavBar from "./components/navbar/navbar";
 import Bienvenida from "./components/bienvenida/bienvenida";
 import axios from "axios";
+import Home from "./components/home/home";
 import { addProduct, removeProduct } from "./globalFunctions/globalFunctions";
 import Productos from "./components/tablaProductos/tablaproductos";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -53,10 +55,21 @@ function App() {
           <img className="logo" src="/moba-studio.jpg" alt="MOBA logo" />
         </a>
       </div>
-      <Productos productos={productos}          setAdd={setAdd}
-          add={add}
-          setRemove={setRemove}
-          remove={remove} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/productos"
+          element={
+            <Productos
+              productos={productos}
+              setAdd={setAdd}
+              add={add}
+              setRemove={setRemove}
+              remove={remove}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }
