@@ -16,7 +16,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import "./navbar.css"
+import "./navbar.css";
+import { Link } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -82,7 +83,7 @@ export default function NavBar(props) {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-  
+
   const handleOptionsMenuClose = () => {
     setOptionEl(null);
     handleMobileMenuClose();
@@ -110,8 +111,12 @@ export default function NavBar(props) {
       open={isOptionsMenuOpen}
       onClose={handleOptionsMenuClose}
     >
-      <MenuItem onClick={handleOptionsMenuClose}>Gallery</MenuItem>
-      <MenuItem onClick={handleOptionsMenuClose}>Events</MenuItem>
+      <Link to={`/`}>
+        <MenuItem onClick={handleOptionsMenuClose}>Photo Gallery</MenuItem>
+      </Link>
+      <Link to={`/productos`}>
+        <MenuItem onClick={handleOptionsMenuClose}>Products</MenuItem>
+      </Link>
     </Menu>
   );
 
