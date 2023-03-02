@@ -9,6 +9,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import "./table.css";
+import { Link, NavLink } from "react-router-dom";
 
 const columns = [
   { id: "title", label: "Name", minWidth: 170 },
@@ -94,11 +95,13 @@ export default function Productos(props) {
                           {column.format && typeof value === "number" ? (
                             column.format(value)
                           ) : column.id === "thumbnail" ? (
+                            <NavLink to={`/productos/${producto.id}`}>
                             <img
                               className="logo2"
                               src={producto[column.id]}
                               alt="MOBA logo"
                             />
+                            </NavLink>
                           ) : column.id === "buttons" ? (
                             <div className="tablecss">
                               <Button

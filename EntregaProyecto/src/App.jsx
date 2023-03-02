@@ -6,6 +6,8 @@ import axios from "axios";
 import Home from "./components/home/home";
 import { addProduct, removeProduct } from "./globalFunctions/globalFunctions";
 import Productos from "./components/tablaProductos/tablaproductos";
+import Producto from "./components/productos/producto";
+import Profile from "./components/user/user";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -70,6 +72,14 @@ function App() {
               remove={remove}
             />
           }
+        />
+        <Route
+          path="/productos/:productoId"
+          element={<Producto productos={productos} />}
+        />
+        <Route
+          path="/profile"
+          element={<Profile user={user} />}
         />
       </Routes>
     </div>
