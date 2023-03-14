@@ -9,6 +9,7 @@ import Productos from "./components/tablaProductos/tablaproductos";
 import Producto from "./components/productos/producto";
 import Profile from "./components/user/user";
 import { Route, Routes } from "react-router-dom";
+import Loading from "./components/loading/loading";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -16,6 +17,7 @@ function App() {
   const [contador, setContador] = useState(0);
   const [add, setAdd] = useState(true);
   const [remove, setRemove] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const getCarrito = () => {
     setContador(0);
@@ -29,6 +31,8 @@ function App() {
   const getProductos = async () => {
     let resp = await axios.get(`https://dummyjson.com/products`);
     setProductos(resp.data.products);
+    setTimeout(()=>{ setLoading(false)},3000)
+   ;
   };
 
   useEffect(() => {
@@ -45,7 +49,9 @@ function App() {
     setContador(addProduct(contador));
   }, [add]);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="App">
       <div>
         <NavBar contador={contador} />
@@ -77,10 +83,7 @@ function App() {
           path="/productos/:productoId"
           element={<Producto productos={productos} />}
         />
-        <Route
-          path="/profile"
-          element={<Profile user={user} />}
-        />
+        <Route path="/profile" element={<Profile user={user} />} />
       </Routes>
     </div>
   );
