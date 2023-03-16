@@ -42,6 +42,7 @@ const columns = [
 ];
 
 export default function Productos(props) {
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

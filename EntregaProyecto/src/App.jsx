@@ -10,6 +10,14 @@ import Producto from "./components/productos/producto";
 import Profile from "./components/user/user";
 import { Route, Routes } from "react-router-dom";
 import Loading from "./components/loading/loading";
+import {
+  serverTimestamp,
+  setDoc,
+  doc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
+import db from "../db/firebase-config";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -23,16 +31,36 @@ function App() {
     setContador(0);
   };
 
+  // Code for populating database
+
+  // const saveProductos = async (productos) => {
+  //   for (let producto of productos) {
+  //     let id = producto.id.toString();
+  //     let docRef = doc(db, "products", id);
+  //     producto = { ...producto, createdAt: serverTimestamp() };
+  //     await setDoc(docRef, producto);
+  //   }
+  // };
+
   const getUser = async () => {
     let resp = await axios.get(`https://jsonplaceholder.typicode.com/users/1`);
     setUser(resp.data);
   };
 
   const getProductos = async () => {
-    let resp = await axios.get(`https://dummyjson.com/products`);
-    setProductos(resp.data.products);
-    setTimeout(()=>{ setLoading(false)},3000)
-   ;
+    const productsCollection = collection(db, "products");
+    let snapshot = await getDocs(productsCollection);
+    setProductos(snapshot.docs.map((doc) => doc.data()));
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    //API METHOD
+    // let resp = await axios.get(`https://dummyjson.com/products`);
+    // // saveProductos(resp.data.products); Populating database from API
+    // setProductos(resp.data.products);
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 3000);
   };
 
   useEffect(() => {
