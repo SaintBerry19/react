@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 
 function Profile(props) {
   let user = props.user;
-  console.log(user);
   return (
     <div>
       <h2>Nombre:{user.name}</h2>

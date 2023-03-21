@@ -10,6 +10,7 @@ import Producto from "./components/productos/producto";
 import Profile from "./components/user/user";
 import { Route, Routes } from "react-router-dom";
 import Loading from "./components/loading/loading";
+import { v4 as uuid } from 'uuid';
 import {
   serverTimestamp,
   setDoc,
@@ -26,8 +27,10 @@ function App() {
   const [add, setAdd] = useState(true);
   const [remove, setRemove] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [carrito, setCarrito] = useState({});
 
-  const getCarrito = () => {
+
+  const getContador = () => {
     setContador(0);
   };
 
@@ -58,6 +61,7 @@ function App() {
     const usersCollection = collection(db, "users");
     let snapshot = await getDocs(usersCollection);
     setUser(snapshot.docs[0].data());
+    getCarrito(snapshot.docs[0].data().email)
   };
 
   const getProductos = async () => {
@@ -76,8 +80,18 @@ function App() {
     // }, 3000);
   };
 
+  const getCarrito = async (user) => {
+    const carritosCollection = collection(db, "carritos");
+    let snapshot = await getDocs(carritosCollection);
+    if (snapshot.docs.length===0) {
+      let id =  uuid();
+      let docRef = doc(db, "carritos", id);
+      let carrito = {products:[],user:user, createdAt: serverTimestamp() };
+      await setDoc(docRef, carrito)
+    }};
+
   useEffect(() => {
-    getCarrito();
+    getContador();
     getUser();
     getProductos();
   }, []); //[] para que solo se ejecute una vez
