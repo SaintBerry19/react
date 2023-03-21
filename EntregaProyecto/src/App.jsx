@@ -10,7 +10,7 @@ import Producto from "./components/productos/producto";
 import Profile from "./components/user/user";
 import { Route, Routes } from "react-router-dom";
 import Loading from "./components/loading/loading";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 import {
   serverTimestamp,
   setDoc,
@@ -19,6 +19,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import db from "../db/firebase-config";
+import Carrito from "./components/carrito/carrito";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -28,11 +29,6 @@ function App() {
   const [remove, setRemove] = useState(true);
   const [loading, setLoading] = useState(true);
   const [carrito, setCarrito] = useState({});
-
-
-  const getContador = () => {
-    setContador(0);
-  };
 
   // Code for populating database
 
@@ -53,6 +49,19 @@ function App() {
   //   }
   // };
 
+  const getContador = async (user) => {
+    const carritosCollection = collection(db, "carritos");
+    let snapshot = await getDocs(carritosCollection);
+    let carrito;
+    for (let doc of snapshot.docs) {
+      if (doc.data().user === user) {
+        carrito = doc.data();
+      }
+    }
+    let cantidad = carrito.products.length;
+    setContador(cantidad);
+  };
+  
   const getUser = async () => {
     //API METHOD
     // let resp = await axios.get(`https://jsonplaceholder.typicode.com/users`);
@@ -61,7 +70,8 @@ function App() {
     const usersCollection = collection(db, "users");
     let snapshot = await getDocs(usersCollection);
     setUser(snapshot.docs[0].data());
-    getCarrito(snapshot.docs[0].data().email)
+    getCarrito(snapshot.docs[0].data().email);
+    getContador(snapshot.docs[0].data().email);
   };
 
   const getProductos = async () => {
@@ -83,15 +93,35 @@ function App() {
   const getCarrito = async (user) => {
     const carritosCollection = collection(db, "carritos");
     let snapshot = await getDocs(carritosCollection);
-    if (snapshot.docs.length===0) {
-      let id =  uuid();
+    if (snapshot.docs.length === 0) {
+      let id = uuid();
       let docRef = doc(db, "carritos", id);
-      let carrito = {products:[],user:user, createdAt: serverTimestamp() };
-      await setDoc(docRef, carrito)
-    }};
+      let carrito = { products: [], user: user, createdAt: serverTimestamp() };
+      await setDoc(docRef, carrito);
+      setCarrito(carrito);
+    } else {
+      let flag = false;
+      for (let doc of snapshot.docs) {
+        if (doc.data().user === user) {
+          flag = true;
+          setCarrito(doc.data());
+        }
+      }
+      if (flag === false) {
+        let id = uuid();
+        let docRef = doc(db, "carritos", id);
+        let carrito = {
+          products: [],
+          user: user,
+          createdAt: serverTimestamp(),
+        };
+        await setDoc(docRef, carrito);
+        setCarrito(carrito);
+      }
+    }
+  };
 
   useEffect(() => {
-    getContador();
     getUser();
     getProductos();
   }, []); //[] para que solo se ejecute una vez
@@ -129,8 +159,8 @@ function App() {
               productos={productos}
               setAdd={setAdd}
               add={add}
-              setRemove={setRemove}
-              remove={remove}
+              user={user}
+              setCarrito={setCarrito}
             />
           }
         />
@@ -139,6 +169,18 @@ function App() {
           element={<Producto productos={productos} />}
         />
         <Route path="/profile" element={<Profile user={user} />} />
+        <Route
+          path="/carrito"
+          element={
+            <Carrito
+              carrito={carrito}
+              setRemove={setRemove}
+              remove={remove}
+              user={user}
+              setCarrito={setCarrito}
+            />
+          }
+        />
       </Routes>
     </div>
   );

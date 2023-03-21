@@ -161,34 +161,17 @@ export default function NavBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 7 products" color="inherit">
-          <Badge badgeContent={props.contador} color="error">
-            <AddShoppingCartIcon />
-          </Badge>
-        </IconButton>
-        <p>Cart</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+      {" "}
+      <Link to={`/carrito`}>
+        <MenuItem>
+          <IconButton size="large" aria-label="show 7 products" color="inherit">
+            <Badge badgeContent={props.contador} color="error">
+              <AddShoppingCartIcon />
+            </Badge>
+          </IconButton>
+          <p>Cart</p>
+        </MenuItem>
+      </Link>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -199,7 +182,7 @@ export default function NavBar(props) {
         >
           <AccountCircle />
         </IconButton>
-          <p>Profile</p>
+        <p>Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -236,33 +219,18 @@ export default function NavBar(props) {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 7 products"
-              color="inherit"
-            >
-              <Badge badgeContent={props.contador} color="error">
-                <AddShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <Link to={`/carrito`}>
+              <IconButton
+                size="large"
+                aria-label="show 7 products"
+                color="inherit"
+              >
+                <Badge badgeContent={props.contador} color="error">
+                  <AddShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            </Link>
+
             <IconButton
               size="large"
               edge="end"

@@ -1,0 +1,41 @@
+.tablecss {
+  justify-content: space-between !important;
+}
+
+.css-dwuj3p-MuiTableCell-root {
+  font-size: 1.25rem !important;
+  color: rgba(197, 98, 184, 0.87) !important;
+}
+
+.css-y8ay40-MuiTableCell-root {
+  font-size: 1.25rem !important;
+  color: rgba(197, 98, 184, 0.87) !important;
+}
+
+.css-1ex1afd-MuiTableCell-root {
+  font-size: 1rem !important;
+  color: rgba(197, 98, 184, 0.87) !important;
+}
+
+.css-1yhpg23-MuiTableCell-root {
+  font-size: 1rem !important;
+  color: rgba(197, 98, 184, 0.87) !important;
+}
+
+.logo2 {
+  height: 9em;
+  width: 9rem;
+  padding: 1em;
+  will-change: filter;
+  transition: filter 300ms;
+  margin-top: 2rem;
+}
+.logo2:hover {
+  filter: drop-shadow(0 0 2em rgb(22, 131, 120));
+}
+
+.tablaProductos{
+  margin-left:3rem !important;
+  margin-right:3rem !important
+
+}

@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import "./table.css";
 import { Link, NavLink } from "react-router-dom";
+import { saveProductos } from "../../globalFunctions/globalFunctions";
 
 const columns = [
   { id: "title", label: "Name", minWidth: 170 },
@@ -42,7 +43,6 @@ const columns = [
 ];
 
 export default function Productos(props) {
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -57,91 +57,91 @@ export default function Productos(props) {
 
   return (
     <div className="tablaProductos">
-    <Paper sx={{ width: "100%" }}>
-      <TableContainer sx={{ maxHeight: 800}}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={6}>
-                MOBA STUDIO Productos
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ top: 57, minWidth: column.minWidth }}
-                >
-                  {column.label}
+      <Paper sx={{ width: "100%" }}>
+        <TableContainer sx={{ maxHeight: 800 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" colSpan={6}>
+                  MOBA STUDIO Productos
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.productos
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((producto) => {
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={producto.brand + producto.title}
+              </TableRow>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ top: 57, minWidth: column.minWidth }}
                   >
-                    {columns.map((column) => {
-                      const value = producto[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number" ? (
-                            column.format(value)
-                          ) : column.id === "thumbnail" ? (
-                            <NavLink to={`/productos/${producto.id}`}>
-                            <img
-                              className="logo2"
-                              src={producto[column.id]}
-                              alt="MOBA logo"
-                            />
-                            </NavLink>
-                          ) : column.id === "buttons" ? (
-                            <div className="tablecss">
-                              <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={() => props.setRemove(!props.remove)}
-                              >
-                                Delete from Cart
-                              </Button>{" "}
-                              <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={() => props.setAdd(!props.add)}
-                              >
-                                Add to Cart
-                              </Button>
-                            </div>
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={props.productos.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {props.productos
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((producto) => {
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={producto.brand + producto.title}
+                    >
+                      {columns.map((column) => {
+                        const value = producto[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === "number" ? (
+                              column.format(value)
+                            ) : column.id === "thumbnail" ? (
+                              <NavLink to={`/productos/${producto.id}`}>
+                                <img
+                                  className="logo2"
+                                  src={producto[column.id]}
+                                  alt="MOBA logo"
+                                />
+                              </NavLink>
+                            ) : column.id === "buttons" ? (
+                              <div className="tablecss">
+                                <Button
+                                  variant="outlined"
+                                  color="secondary"
+                                  onClick={() => {
+                                    saveProductos(producto, props.user).then(
+                                      (value) => {
+                                        props.setAdd(!props.add);
+                                        props.setCarrito(value);
+                                      }
+                                    );
+                                  }}
+                                >
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={props.productos.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </div>
   );
 }
