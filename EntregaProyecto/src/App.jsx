@@ -41,10 +41,23 @@ function App() {
   //     await setDoc(docRef, producto);
   //   }
   // };
+  //   const saveUsers = async (users) => {
+  //   for (let user of users) {
+  //     let id = user.id.toString();
+  //     let docRef = doc(db, "users", id);
+  //     user = { ...user, createdAt: serverTimestamp() };
+  //     await setDoc(docRef, user);
+  //   }
+  // };
 
   const getUser = async () => {
-    let resp = await axios.get(`https://jsonplaceholder.typicode.com/users/1`);
-    setUser(resp.data);
+    //API METHOD
+    // let resp = await axios.get(`https://jsonplaceholder.typicode.com/users`);
+    // saveUsers(resp.data); //Populating database from API
+    // setUser(resp.data[0]);
+    const usersCollection = collection(db, "users");
+    let snapshot = await getDocs(usersCollection);
+    setUser(snapshot.docs[0].data());
   };
 
   const getProductos = async () => {
