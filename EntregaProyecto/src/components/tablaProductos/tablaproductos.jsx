@@ -45,13 +45,18 @@ const columns = [
 export default function Productos(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [cantidad,setCantidad] = React.useState(1)
+
+  const handleChange = (event) => {
+    setCantidad(event.target.value);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
+    setRowsPerPage(event.target.value);
     setPage(0);
   };
 
@@ -105,20 +110,33 @@ export default function Productos(props) {
                               </NavLink>
                             ) : column.id === "buttons" ? (
                               <div className="tablecss">
-                                <Button
-                                  variant="outlined"
-                                  color="secondary"
-                                  onClick={() => {
-                                    saveProductos(producto, props.user).then(
-                                      (value) => {
-                                        props.setAdd(!props.add);
-                                        props.setCarrito(value);
-                                      }
-                                    );
-                                  }}
-                                >
-                                  Add to Cart
-                                </Button>
+                                <form>
+                                <label htmlFor="quantity">Cantidad: </label>
+                                  <input
+                                    type="number"
+                                    id="quantity"
+                                    name="quantity"
+                                    min="1"
+                                    max='99'
+                                    onChange={handleChange}
+                                  />
+                                  <br></br>
+                                  <br></br>
+                                  <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={() => {
+                                      saveProductos(producto, props.user,cantidad).then(
+                                        (value) => {
+                                          props.setAdd(!props.add);
+                                          props.setCarrito(value);
+                                        }
+                                      );
+                                    }}
+                                  >
+                                    Add to Cart
+                                  </Button>
+                                </form>
                               </div>
                             ) : (
                               value

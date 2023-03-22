@@ -9,17 +9,25 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import "./table.css";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { deleteProductos } from "../../globalFunctions/globalFunctions";
 import { v4 as uuid } from "uuid";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { realizarCompra } from "../../globalFunctions/globalFunctions";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 const columns = [
-  { id: "title", label: "Name", minWidth: 170 },
+  { id: "title", label: "Name", minWidth: 100 },
   { id: "brand", label: "Brand", minWidth: 100 },
   {
     id: "category",
     label: "Category",
-    minWidth: 170,
+    minWidth: 100,
     align: "center",
   },
   {
@@ -36,8 +44,20 @@ const columns = [
     align: "center",
   },
   {
+    id: "cantidad",
+    label: "Cantidad",
+    minWidth: 100,
+    align: "center",
+  },
+  {
+    id: "subtotal",
+    label: "Subtotal",
+    minWidth: 100,
+    align: "center",
+  },
+  {
     id: "buttons",
-    label: "Agregar a Carrito",
+    label: "Eliminar Del Carrito",
     minWidth: 170,
     align: "center",
   },
@@ -46,13 +66,27 @@ const columns = [
 export default function Carrito(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [cantidad, setCantidad] = React.useState(1);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleChange = (event) => {
+    setCantidad(event.target.value);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
+    setRowsPerPage(event.target.value);
     setPage(0);
   };
 
@@ -63,7 +97,7 @@ export default function Carrito(props) {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell align="center" colSpan={6}>
+                <TableCell align="center" colSpan={8}>
                   MOBA STUDIO Productos
                 </TableCell>
               </TableRow>
@@ -109,20 +143,36 @@ export default function Carrito(props) {
                               </NavLink>
                             ) : column.id === "buttons" ? (
                               <div className="tablecss">
-                                <Button
-                                  variant="outlined"
-                                  color="secondary"
-                                  onClick={() => {
-                                    deleteProductos(producto, props.user).then(
-                                      (value) => {
-                                        props.setRemove(!props.remove)
+                                <form>
+                                  <label htmlFor="quantity">Cantidad: </label>
+                                  <input
+                                    type="number"
+                                    id="quantity"
+                                    name="quantity"
+                                    min="1"
+                                    max="99"
+                                    value={cantidad}
+                                    onChange={handleChange}
+                                  />
+                                  <br></br>
+                                  <br></br>
+                                  <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={() => {
+                                      deleteProductos(
+                                        producto,
+                                        props.user,
+                                        cantidad
+                                      ).then((value) => {
+                                        props.setRemove(!props.remove);
                                         props.setCarrito(value);
-                                      }
-                                    );
-                                  }}
-                                >
-                                  Delete from Cart
-                                </Button>
+                                      });
+                                    }}
+                                  >
+                                    Delete From Cart
+                                  </Button>
+                                </form>
                               </div>
                             ) : (
                               value
@@ -146,6 +196,47 @@ export default function Carrito(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <br></br>
+      <br></br>
+      <div>
+        <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
+          Mostrar Total y Realizar Compra
+        </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Detalles de la compra:"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Se encuentra a punto de realizar una compra por un total de{" "}
+              {props.carrito.total} dolares. Desea seguir adelante con la
+              compra y vaciar su carrito?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Modificar Pedido</Button>
+            <Button
+              onClick={() => {
+                realizarCompra(props.user).then((value) => {
+                  handleClose;
+                  props.setRemove(!props.remove);
+                  props.setCarrito(value);
+                });
+              }}
+              autoFocus
+            >
+              Realizar Compra
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <br></br>
+      <br></br>
     </div>
   ) : (
     <div>

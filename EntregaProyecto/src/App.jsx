@@ -96,7 +96,7 @@ function App() {
     if (snapshot.docs.length === 0) {
       let id = uuid();
       let docRef = doc(db, "carritos", id);
-      let carrito = { products: [], user: user, createdAt: serverTimestamp() };
+      let carrito = { products: [],total:0, user: user, createdAt: serverTimestamp() };
       await setDoc(docRef, carrito);
       setCarrito(carrito);
     } else {
