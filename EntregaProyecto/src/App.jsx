@@ -7,7 +7,7 @@ import Home from "./components/home/home";
 import { addProduct, removeProduct } from "./globalFunctions/globalFunctions";
 import Productos from "./components/tablaProductos/tablaproductos";
 import Producto from "./components/productos/producto";
-import Profile from "./components/user/user";
+import Profile from "./components/profile/profile";
 import { Route, Routes } from "react-router-dom";
 import Loading from "./components/loading/loading";
 import { v4 as uuid } from "uuid";
@@ -20,9 +20,13 @@ import {
 } from "firebase/firestore";
 import db from "../db/firebase-config";
 import Carrito from "./components/carrito/carrito";
+import Users from "./components/users/users";
+import User from "./components/users/user";
+
 
 function App() {
   const [user, setUser] = useState([]);
+  const [users, setUsers] = useState([]);
   const [productos, setProductos] = useState([]);
   const [contador, setContador] = useState(0);
   const [add, setAdd] = useState(true);
@@ -61,7 +65,7 @@ function App() {
     let cantidad = carrito.products.length;
     setContador(cantidad);
   };
-  
+
   const getUser = async () => {
     //API METHOD
     // let resp = await axios.get(`https://jsonplaceholder.typicode.com/users`);
@@ -72,6 +76,12 @@ function App() {
     setUser(snapshot.docs[0].data());
     getCarrito(snapshot.docs[0].data().email);
     getContador(snapshot.docs[0].data().email);
+  };
+
+  const getUsers = async () => {
+    const usersCollection = collection(db, "users");
+    let snapshot = await getDocs(usersCollection);
+    setUsers(snapshot.docs.map((doc) => doc.data()));
   };
 
   const getProductos = async () => {
@@ -96,7 +106,12 @@ function App() {
     if (snapshot.docs.length === 0) {
       let id = uuid();
       let docRef = doc(db, "carritos", id);
-      let carrito = { products: [],total:0, user: user, createdAt: serverTimestamp() };
+      let carrito = {
+        products: [],
+        total: 0,
+        user: user,
+        createdAt: serverTimestamp(),
+      };
       await setDoc(docRef, carrito);
       setCarrito(carrito);
     } else {
@@ -124,6 +139,7 @@ function App() {
   useEffect(() => {
     getUser();
     getProductos();
+    getUsers();
   }, []); //[] para que solo se ejecute una vez
 
   useEffect(() => {
@@ -164,10 +180,12 @@ function App() {
             />
           }
         />
+        <Route path="/users" element={<Users users={users} />} />
         <Route
           path="/productos/:productoId"
           element={<Producto productos={productos} />}
         />
+        <Route path="/users/:userId" element={<User users={users} />} />
         <Route path="/profile" element={<Profile user={user} />} />
         <Route
           path="/carrito"
