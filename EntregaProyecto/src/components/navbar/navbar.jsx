@@ -16,8 +16,9 @@ import "./navbar.css";
 import { Link } from "react-router-dom";
 import Badge from "@mui/material/Badge";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { v4 as uuid } from "uuid";
 
-const pages = ["Productos", "Usuarios"];
+const pages = ["Productos", "Usuarios", "Ordenes"];
 
 function Navbar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -40,7 +41,6 @@ function Navbar(props) {
               <Typography
                 variant="h6"
                 noWrap
-                component="a"
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },
@@ -68,6 +68,7 @@ function Navbar(props) {
               <MenuIcon />
             </IconButton>
             <Menu
+              key={uuid()}
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
@@ -87,17 +88,34 @@ function Navbar(props) {
             >
               {pages.map((page) =>
                 page === "Productos" ? (
-                  <Link to={`/productos`}>
-                    <Tooltip title="Productos Registrados">
-                      <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Link key={uuid()} to={`/productos`}>
+                    <Tooltip key={uuid()} title="Productos Registrados">
+                      <MenuItem
+                        key={page + uuid()}
+                        onClick={handleCloseNavMenu}
+                      >
+                        <Typography textAlign="center">{page}</Typography>
+                      </MenuItem>
+                    </Tooltip>
+                  </Link>
+                ) : page === "Usuarios" ? (
+                  <Link key={uuid()} to={`/users`}>
+                    <Tooltip key={uuid()} title="Usuarios Registrados">
+                      <MenuItem
+                        key={page + uuid()}
+                        onClick={handleCloseNavMenu}
+                      >
                         <Typography textAlign="center">{page}</Typography>
                       </MenuItem>
                     </Tooltip>
                   </Link>
                 ) : (
-                  <Link to={`/users`}>
-                    <Tooltip title="Usuarios Registrados">
-                      <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Link key={uuid()} to={`/orders`}>
+                    <Tooltip key={uuid()} title="Ordenes Del Usuario">
+                      <MenuItem
+                        key={page + uuid()}
+                        onClick={handleCloseNavMenu}
+                      >
                         <Typography textAlign="center">{page}</Typography>
                       </MenuItem>
                     </Tooltip>
@@ -113,7 +131,6 @@ function Navbar(props) {
               <Typography
                 variant="h5"
                 noWrap
-                component="a"
                 sx={{
                   mr: 2,
                   display: { xs: "flex", md: "none" },
@@ -133,10 +150,10 @@ function Navbar(props) {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) =>
               page === "Productos" ? (
-                <Link to={`/productos`}>
-                  <Tooltip title="Productos Registrados">
+                <Link key={uuid()} to={`/productos`}>
+                  <Tooltip key={uuid()} title="Productos Registrados">
                     <Button
-                      key={page}
+                      key={page + uuid()}
                       onClick={handleCloseNavMenu}
                       sx={{ my: 2, color: "white", display: "block" }}
                     >
@@ -144,11 +161,11 @@ function Navbar(props) {
                     </Button>
                   </Tooltip>
                 </Link>
-              ) : (
-                <Link to={`/users`}>
-                  <Tooltip title="Usuarios Registrados">
+              ) : page === "Usuarios"?(
+                <Link key={uuid()} to={`/users`}>
+                  <Tooltip key={uuid()} title="Usuarios Registrados">
                     <Button
-                      key={page}
+                      key={page + uuid()}
                       onClick={handleCloseNavMenu}
                       sx={{ my: 2, color: "white", display: "block" }}
                     >
@@ -156,12 +173,22 @@ function Navbar(props) {
                     </Button>
                   </Tooltip>
                 </Link>
-              )
+              ):(                <Link key={uuid()} to={`/orders`}>
+              <Tooltip key={uuid()} title="Ordenes Del Usuario">
+                <Button
+                  key={page + uuid()}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page}
+                </Button>
+              </Tooltip>
+            </Link>)
             )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Link to={`/carrito`}>
-              <MenuItem>
+              <MenuItem key={uuid()}>
                 <IconButton
                   size="large"
                   aria-label="show 7 products"
@@ -178,7 +205,7 @@ function Navbar(props) {
             <Link to={`/profile`}>
               <Tooltip title="Visita tu perfil!">
                 <IconButton sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src=" /2.jpg" />
                 </IconButton>
               </Tooltip>
             </Link>

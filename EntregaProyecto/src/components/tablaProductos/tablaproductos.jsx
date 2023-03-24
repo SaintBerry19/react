@@ -45,10 +45,9 @@ const columns = [
 export default function Productos(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [cantidad,setCantidad] = React.useState(1)
 
   const handleChange = (event) => {
-    setCantidad(event.target.value);
+    props.setCantidad(event.target.value);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -126,7 +125,7 @@ export default function Productos(props) {
                                     variant="outlined"
                                     color="secondary"
                                     onClick={() => {
-                                      saveProductos(producto, props.user,cantidad).then(
+                                      saveProductos(producto, props.user,props.cantidad).then(
                                         (value) => {
                                           props.setAdd(!props.add);
                                           props.setCarrito(value);

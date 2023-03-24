@@ -22,7 +22,7 @@ import db from "../db/firebase-config";
 import Carrito from "./components/carrito/carrito";
 import Users from "./components/users/users";
 import User from "./components/users/user";
-
+import Ordenes from "./components/ordenes/ordenes";
 
 function App() {
   const [user, setUser] = useState([]);
@@ -33,6 +33,8 @@ function App() {
   const [remove, setRemove] = useState(true);
   const [loading, setLoading] = useState(true);
   const [carrito, setCarrito] = useState({});
+  const [cantidad, setCantidad] = useState(1);
+  const [ordenes, setOrdenes] = useState([]);
 
   // Code for populating database
 
@@ -62,8 +64,12 @@ function App() {
         carrito = doc.data();
       }
     }
-    let cantidad = carrito.products.length;
-    setContador(cantidad);
+    let productosCarrito = carrito.products;
+    let sumaProductos = 0;
+    for (let producto of productosCarrito) {
+      sumaProductos = sumaProductos + producto.cantidad;
+    }
+    setContador(sumaProductos);
   };
 
   const getUser = async () => {
@@ -76,6 +82,7 @@ function App() {
     setUser(snapshot.docs[0].data());
     getCarrito(snapshot.docs[0].data().email);
     getContador(snapshot.docs[0].data().email);
+    getOrdenes();
   };
 
   const getUsers = async () => {
@@ -128,12 +135,19 @@ function App() {
         let carrito = {
           products: [],
           user: user,
+          total: 0,
           createdAt: serverTimestamp(),
         };
         await setDoc(docRef, carrito);
         setCarrito(carrito);
       }
     }
+  };
+
+  const getOrdenes = async () => {
+    const ordersCollection = collection(db, "orders");
+    let snapshot = await getDocs(ordersCollection);
+    setOrdenes(snapshot.docs.map((doc) => doc.data()));
   };
 
   useEffect(() => {
@@ -143,11 +157,15 @@ function App() {
   }, []); //[] para que solo se ejecute una vez
 
   useEffect(() => {
-    contador < 1 ? setContador(0) : setContador(removeProduct(contador));
+    contador < 1
+      ? setContador(0)
+      : setContador(removeProduct(contador, cantidad));
+      getUser()
   }, [remove]);
 
   useEffect(() => {
-    setContador(addProduct(contador));
+    getUser()
+    setContador(addProduct(contador, cantidad));
   }, [add]);
 
   return loading ? (
@@ -177,6 +195,8 @@ function App() {
               add={add}
               user={user}
               setCarrito={setCarrito}
+              setCantidad={setCantidad}
+              cantidad={cantidad}
             />
           }
         />
@@ -188,6 +208,10 @@ function App() {
         <Route path="/users/:userId" element={<User users={users} />} />
         <Route path="/profile" element={<Profile user={user} />} />
         <Route
+          path="/orders"
+          element={<Ordenes ordenes={ordenes} user={user} />}
+        />
+        <Route
           path="/carrito"
           element={
             <Carrito
@@ -196,6 +220,8 @@ function App() {
               remove={remove}
               user={user}
               setCarrito={setCarrito}
+              setCantidad={setCantidad}
+              cantidad={cantidad}
             />
           }
         />

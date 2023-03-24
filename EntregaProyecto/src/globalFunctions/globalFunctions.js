@@ -6,13 +6,21 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore";
+import { v4 as uuid } from "uuid";
 
-const addProduct = (contador) => {
-  contador += 1;
+const addProduct = (contador, cantidad) => {
+  if (contador < 1) {
+    contador = 0;
+  }
+
+  contador += Number(cantidad);
   return contador;
 };
-const removeProduct = (contador) => {
-  contador -= 1;
+const removeProduct = (contador, cantidad) => {
+  contador -= Number(cantidad);
+  if (contador < 1) {
+    contador = 0;
+  }
   return contador;
 };
 
@@ -70,7 +78,7 @@ const deleteProductos = async (producto, user, cantidad) => {
   for (let i = 0; i < carrito.products.length; i++) {
     if (carrito.products[i].id === producto.id) {
       index = i;
-      if (carrito.products[i].cantidad < Number(cantidad)) {
+      if (carrito.products[i].cantidad <= Number(cantidad)) {
         carrito.total =
           carrito.total -
           carrito.products[i].cantidad * carrito.products[i].price;
@@ -99,11 +107,33 @@ const realizarCompra = async (user) => {
       id = doc.id;
       carrito = doc.data();
     }
+  }    
+  let sumaProductos = 0
+  for (let producto of carrito.products) {
+    sumaProductos=sumaProductos+ producto.cantidad
   }
-  carrito.products = []
-  carrito.total= 0
+  let orderId = uuid();
+  let orderRef = doc(db, "orders", orderId);
+  let order = {
+    numeroProductos:sumaProductos,
+    id:orderId,
+    products: carrito.products,
+    total: carrito.total,
+    user: user.email,
+    createdAt: serverTimestamp(),
+  };
+  await setDoc(orderRef, order);
+  carrito.products = [];
+  carrito.total = 0;
   let docRef = doc(db, "carritos", id);
   await setDoc(docRef, carrito);
+
   return carrito;
 };
-export { addProduct, removeProduct, saveProductos, deleteProductos,realizarCompra };
+export {
+  addProduct,
+  removeProduct,
+  saveProductos,
+  deleteProductos,
+  realizarCompra,
+};

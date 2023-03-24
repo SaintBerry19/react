@@ -18,8 +18,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { realizarCompra } from "../../globalFunctions/globalFunctions";
-import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
 const columns = [
   { id: "title", label: "Name", minWidth: 100 },
@@ -66,7 +69,6 @@ const columns = [
 export default function Carrito(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [cantidad, setCantidad] = React.useState(1);
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -78,7 +80,7 @@ export default function Carrito(props) {
   };
 
   const handleChange = (event) => {
-    setCantidad(event.target.value);
+    props.setCantidad(event.target.value);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -89,6 +91,16 @@ export default function Carrito(props) {
     setRowsPerPage(event.target.value);
     setPage(0);
   };
+
+  const card = (
+    <React.Fragment>
+      <CardContent>
+        <Typography variant="h5" component="div">
+          Total a pagar: ${props.carrito.total}
+        </Typography>
+      </CardContent>
+    </React.Fragment>
+  );
 
   return props.carrito.products.length !== 0 ? (
     <div className="tablaProductos">
@@ -151,7 +163,7 @@ export default function Carrito(props) {
                                     name="quantity"
                                     min="1"
                                     max="99"
-                                    value={cantidad}
+                                    value={props.cantidad}
                                     onChange={handleChange}
                                   />
                                   <br></br>
@@ -163,10 +175,10 @@ export default function Carrito(props) {
                                       deleteProductos(
                                         producto,
                                         props.user,
-                                        cantidad
+                                        props.cantidad
                                       ).then((value) => {
-                                        props.setRemove(!props.remove);
                                         props.setCarrito(value);
+                                        props.setRemove(!props.remove);
                                       });
                                     }}
                                   >
@@ -199,8 +211,13 @@ export default function Carrito(props) {
       <br></br>
       <br></br>
       <div>
+        <Box sx={{ minWidth: 275 }}>
+          <Card variant="outlined">{card}</Card>
+        </Box>
+        <br></br>
+        <br></br>
         <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-          Mostrar Total y Realizar Compra
+          Realizar Compra
         </Button>
         <Dialog
           open={open}
@@ -214,8 +231,8 @@ export default function Carrito(props) {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Se encuentra a punto de realizar una compra por un total de{" "}
-              {props.carrito.total} dolares. Desea seguir adelante con la
-              compra y vaciar su carrito?
+              {props.carrito.total} dolares. Desea seguir adelante con la compra
+              y vaciar su carrito?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -224,8 +241,8 @@ export default function Carrito(props) {
               onClick={() => {
                 realizarCompra(props.user).then((value) => {
                   handleClose;
-                  props.setRemove(!props.remove);
                   props.setCarrito(value);
+                  props.setRemove(!props.remove);
                 });
               }}
               autoFocus
